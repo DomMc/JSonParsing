@@ -11,64 +11,8 @@
 #include <vector>
 
 #define ISTREAM_IT				std::istreambuf_iterator
-#define JSON_VECTOR				std::vector<JSonObject>
-
-class JSonPair
-{
-public:
-
-	JSonPair() {};
-
-	JSonPair(const std::string& first, const std::string& second)
-	{
-		m_pair.first = first;
-		m_pair.second = second;
-	}
-
-	JSonPair(const std::pair<std::string, std::string>& pair)
-	{
-		m_pair.first	= pair.first;
-		m_pair.second	= pair.second;
-	}
-
-	[[nodiscard]] const std::string& operator()() const
-	{
-		return m_pair.second;
-	}
-
-	[[nodiscard]] const std::string& first() const
-	{
-		return m_pair.first;
-	}
-
-	[[nodiscard]] const std::string& second() const
-	{
-		return m_pair.second;
-	}
-
-private:
-
-	std::pair<std::string, std::string> m_pair;
-};
-
-class JSonObject
-{
-public:
-
-	void operator[](const JSonPair& pair)
-	{
-		m_object.insert({ pair.first(), pair.second() });
-	}
-
-	[[nodiscard]] JSonPair& operator[](std::string& key) const
-	{
-		return { m_object.find(key)->first, m_object.find(key)->second };
-	}
-
-private:
-
-	std::unordered_multimap<std::string, std::string> m_object;
-};
+#define JSON_OBJECT				std::unordered_map<std::string, std::string>
+#define JSON_VECTOR				std::vector<JSON_OBJECT>
 
 class JSonContainer
 {
@@ -96,7 +40,7 @@ public:
 		return m_vObjects;
 	}
 
-	[[nodiscard]] const JSonObject& operator[](const int index) const
+	[[nodiscard]] const JSON_OBJECT& operator[](const int index) const
 	{
 		return m_vObjects[index];
 	}
@@ -151,7 +95,7 @@ private:
 		constexpr char PAIR_START = '"';
 		constexpr int MARKER_LENGTH = 1;
 
-		JSonObject object;
+		JSON_OBJECT object;
 
 		// Add JSON pairs to the object until startRead passes the end of this object.
 		std::string::size_type startRead = m_string.find(PAIR_START, start + MARKER_LENGTH);
@@ -167,7 +111,7 @@ private:
 			std::string value = m_string.substr(startRead + MARKER_LENGTH, endRead - (startRead + MARKER_LENGTH));
 
 			// Add JSON pair to the object.
-			object[ key, value ];
+			object.insert({ key, value });
 
 			// Move start marker to next position here to aid end of file validation by loop.
 			startRead = m_string.find(PAIR_START, endRead + MARKER_LENGTH);
@@ -181,9 +125,20 @@ private:
 int main()
 {
 	JSonContainer j("JSON/objects.json");
+	uint32_t i = 1;
 
-	std::string s = j[0]["first"]();
-	//std::cout << s << std::endl;
+	for (const auto& obj : j.GetObjects())
+	{
+		std::cout << "Object " << i << std::endl;
+		++i;
+
+		for (const auto& x : obj)
+		{
+			std::cout << x.first << " : " << x.second << std::endl;
+		}
+
+		std::cout << std::endl;
+	}
 
 	return 0;
 }
