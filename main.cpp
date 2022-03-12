@@ -17,6 +17,7 @@ class JSonContainer
 {
 public:
 
+	// Read JSON file into a string then process into JSON objects.
 	JSonContainer(const std::string& filename)
 	{
 		std::ifstream file(filename);
@@ -49,6 +50,8 @@ private:
 	std::string m_string;
 	JSON_VECTOR m_vObjects;
 
+	// Read string and create JSON objects from it.
+	// String must follow standard JSON format.
 	void ProcessString()
 	{
 		constexpr char OBJECT_START = '{';
