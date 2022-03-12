@@ -4,7 +4,6 @@
 */
 
 #include <iostream>
-#include <algorithm>
 #include <string>
 #include <fstream>
 #include <unordered_map>
@@ -66,11 +65,11 @@ private:
 		}
 
 		// Move start to the first object within the JSON file.
-		// end should already be in the right place.
+		// end will already be in the right place.
 		size_t temp = start;
 		start = m_string.find(OBJECT_START, start + MARKER_LENGTH);
 
-		// There may be only one JSON object in the file.
+		// There may only be one JSON object in the file.
 		if (start == std::string::npos)
 		{
 			start = temp;
@@ -82,7 +81,7 @@ private:
 			{
 				ProcessObject(start, end);
 
-				// Leapfrog markers to next object.
+				// Leapfrog markers to the next object.
 				start = m_string.find(OBJECT_START, end + MARKER_LENGTH);
 				end = m_string.find(OBJECT_END, start + MARKER_LENGTH);
 			}
@@ -138,6 +137,13 @@ int main()
 		}
 
 		std::cout << std::endl;
+	}
+
+	const JSON_OBJECT OBJ = j[0];
+
+	for(const auto& [fir, sec] : OBJ)
+	{
+		std::cout << fir << " : " << sec << std::endl;
 	}
 
 	return 0;
