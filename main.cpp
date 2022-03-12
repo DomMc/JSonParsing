@@ -54,10 +54,10 @@ private:
 	{
 		constexpr char OBJECT_START = '{';
 		constexpr char OBJECT_END	= '}';
-		constexpr int MARKER_LENGTH = 1;
+		constexpr uint32_t MARKER_LENGTH = 1;
 
-		std::string::size_type start = m_string.find(OBJECT_START);
-		std::string::size_type end = m_string.find(OBJECT_END);
+		size_t start = m_string.find(OBJECT_START);
+		size_t end = m_string.find(OBJECT_END);
 
 		// A valid JSON file should contain at least one '{' and '}', in that order.
 		if (end == std::string::npos || start >= end)
@@ -67,7 +67,7 @@ private:
 
 		// Move start to the first object within the JSON file.
 		// end should already be in the right place.
-		std::string::size_type temp = start;
+		size_t temp = start;
 		start = m_string.find(OBJECT_START, start + MARKER_LENGTH);
 
 		// There may be only one JSON object in the file.
@@ -90,7 +90,7 @@ private:
 	}
 
 	// Pass the marker positions rather than a sub-string.
-	void ProcessObject(const std::string::size_type& start, const std::string::size_type& end)
+	void ProcessObject(const size_t& start, const size_t& end)
 	{
 		constexpr char PAIR_START = '"';
 		constexpr int MARKER_LENGTH = 1;
