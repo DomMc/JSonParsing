@@ -4,14 +4,75 @@
 */
 
 #include <iostream>
+#include <algorithm>
 #include <string>
 #include <fstream>
 #include <unordered_map>
 #include <vector>
 
 #define ISTREAM_IT				std::istreambuf_iterator
-#define JSON_OBJECT				std::unordered_map<std::string, std::string>
-#define JSON_VECTOR				std::vector<JSON_OBJECT>
+#define JSON_VECTOR				std::vector<JsonObject>
+
+class JsonPair
+{
+public:
+
+	JsonPair() = default;
+
+	JsonPair(std::pair<std::string, std::string> pair)
+		: m_pair(std::move(pair))
+	{}
+
+	[[nodiscard]] std::string& First()
+	{
+		return m_pair.first;
+	}
+
+	[[nodiscard]] std::string& Second()
+	{
+		return m_pair.second;
+	}
+
+private:
+
+	std::pair<std::string, std::string> m_pair;
+};
+
+class JsonObject
+{
+public:
+
+	// Add key : value pair to container.
+	void operator[](JsonPair& pair)
+	{
+		m_vPairs.emplace_back(pair);
+	}
+
+	// Look up a value based on its key.
+	[[nodiscard]] std::string& operator[](const std::string& key)
+	{
+		for (JsonPair& pair : m_vPairs)
+		{
+			if (pair.First() == key)
+			{
+				return pair.Second();
+			}
+		}
+
+		// If the key isn't in the vector, mimic std::map by adding it, then run again.
+		m_vPairs.emplace_back(JsonPair({ key, "key not in container" }));
+		return this->operator[](key);
+	}
+
+	[[nodiscard]] std::vector<JsonPair>& GetPairs()
+	{
+		return m_vPairs;
+	}
+
+private:
+
+	std::vector<JsonPair> m_vPairs;
+};
 
 class JSonContainer
 {
@@ -35,12 +96,12 @@ public:
 		return m_string;
 	}
 
-	[[nodiscard]] const JSON_VECTOR& GetObjects() const
+	[[nodiscard]] JSON_VECTOR& GetObjects()
 	{
 		return m_vObjects;
 	}
 
-	[[nodiscard]] const JSON_OBJECT& operator[](const int index) const
+	[[nodiscard]] JsonObject& operator[](const int index)
 	{
 		return m_vObjects[index];
 	}
@@ -69,13 +130,13 @@ private:
 
 		// Move start to the first object within the JSON file.
 		// end will already be in the right place.
-		size_t temp = start;
+		const size_t TEMP = start;
 		start = m_string.find(OBJECT_START, start + MARKER_LENGTH);
 
 		// There may only be one JSON object in the file.
 		if (start == std::string::npos)
 		{
-			start = temp;
+			start = TEMP;
 			ProcessObject(start, end);
 		}
 		else // Handle multiple objects.
@@ -97,7 +158,7 @@ private:
 		constexpr char PAIR_START = '"';
 		constexpr int MARKER_LENGTH = 1;
 
-		JSON_OBJECT object;
+		JsonObject object;
 
 		// Add JSON pairs to the object until startRead passes the end of this object.
 		std::string::size_type startRead = m_string.find(PAIR_START, start + MARKER_LENGTH);
@@ -113,7 +174,8 @@ private:
 			std::string value = m_string.substr(startRead + MARKER_LENGTH, endRead - (startRead + MARKER_LENGTH));
 
 			// Add JSON pair to the object.
-			object.insert({ key, value });
+			JsonPair p({ key, value });
+			object[p];
 
 			// Move start marker to next position here to aid end of file validation by loop.
 			startRead = m_string.find(PAIR_START, endRead + MARKER_LENGTH);
@@ -127,28 +189,20 @@ private:
 int main()
 {
 	JSonContainer j("JSON/objects.json");
-	uint32_t i = 1;
 
-	for (const auto& obj : j.GetObjects())
+	for(auto& obj : j.GetObjects())
 	{
-		std::cout << "Object " << i << std::endl;
-		++i;
-
-		for (const auto& x : obj)
+		for(auto& a : obj.GetPairs())
 		{
-			std::cout << x.first << " : " << x.second << std::endl;
+			std::cout << a.First() << " : " << a.Second() << std::endl;
 		}
 
 		std::cout << std::endl;
 	}
 
-	const JSON_OBJECT OBJ = j[0];
-
-	for(const auto& [fir, sec] : OBJ)
-	{
-		std::cout << fir << " : " << sec << std::endl;
-	}
-
+	std::cout << j[0]["third"] << std::endl;
+	std::cout << j[1]["new key"] << std::endl;
+	
 	return 0;
 }
 
