@@ -329,12 +329,12 @@ int main()
 	std::cout << "Key: " << pair.first << "\t" << "Value: " << pair.second << std::endl;
 	std::cout << std::endl;
 
-	// Retrieve and print a value using object index and key name.
+	// Retrieve and print a value using object index and key name. Print an error message if not found.
 	std::cout << j[0]["first"] << std::endl;
 	std::cout << j[1]["new key"] << std::endl;
 	std::cout << std::endl;
 
-	// Retrieve and print a value using key name.
+	// Retrieve and print a value using key name. Print an error message if not found.
 	std::cout << j("third") << std::endl;
 	std::cout << j("new key 2") << std::endl;
 	std::cout << std::endl;
