@@ -157,6 +157,11 @@ public:
 		return m_vObjects[index];
 	}
 
+	[[nodiscard]] JsonObject& operator[](const std::string& name)
+	{
+		return this->GetObject(name);
+	}
+
 	[[nodiscard]] JsonPair& GetJsonPair(const int objIndex, const int pairIndex)
 	{
 		return m_vObjects[objIndex].GetPairs()[pairIndex];
@@ -317,6 +322,10 @@ int main()
 	std::cout << j("new key 2") << std::endl;
 
 	JsonObject obj = j.GetObject("Object 1");
+
+	std::cout << std::endl;
+	std::cout << j["Object 1"]["first"] << std::endl;
+	std::cout << j["Object 2"]["seventh"] << std::endl;
 
 	std::cout << std::endl << obj.GetName() << std::endl;
 	for(auto& p : obj.GetPairs())
