@@ -297,7 +297,7 @@ private:
 int main()
 {
 	// Construct from JSON file.
-	JSonContainer j("JSON/objects.json");
+	JSonContainer j("part2.json");
 
 	// Print all objects and their pairs.
 	for(auto& obj : j.GetObjects())
