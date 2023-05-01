@@ -21,7 +21,7 @@ JsonContainer::JsonContainer(const std::string& filename)
 	ProcessString();
 }
 
-[[nodiscard]] const std::string& JsonContainer::operator()(const std::string& key)
+const std::string& JsonContainer::operator()(const std::string& key)
 {
 	for (ObjectIteratorValueType& obj : m_vObjects)
 	{
@@ -37,7 +37,7 @@ JsonContainer::JsonContainer(const std::string& filename)
 	return m_error_KeyNotFOund;
 }
 
-[[nodiscard]] JsonObject& JsonContainer::GetObject(const std::string& name)
+JsonObject& JsonContainer::GetObject(const std::string& name)
 {
 	for (auto& obj : m_vObjects)
 	{
@@ -51,17 +51,17 @@ JsonContainer::JsonContainer(const std::string& filename)
 	return m_vObjects[0];
 }
 
-[[nodiscard]] JsonPair& JsonContainer::GetJsonPair(const int objIndex, const int pairIndex)
+JsonPair& JsonContainer::GetJsonPair(const int objIndex, const int pairIndex)
 {
 	return m_vObjects[objIndex].GetPairs()[pairIndex];
 }
 
-[[nodiscard]] std::pair<std::string, std::string> JsonContainer::GetKeyValuePair(const int objIndex, const int pairIndex)
+std::pair<std::string, std::string> JsonContainer::GetKeyValuePair(const int objIndex, const int pairIndex)
 {
 	return m_vObjects[objIndex].GetPairs()[pairIndex].GetAsStdPair();
 }
 
-[[nodiscard]] std::vector<JsonObject>::size_type JsonContainer::GetPairCount() const
+std::vector<JsonObject>::size_type JsonContainer::GetPairCount() const
 {
 	size_t count = 0;
 
