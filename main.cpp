@@ -33,9 +33,9 @@ int main()
 	std::string::size_type dataEnd		= inString.find(DATA_END_MARKER, startRead);
 	std::string::size_type fileEnd		= inString.find(FILE_END_MARKER, startRead);
 
-	// Prepare to write data
+	// Prepare to write data as CSV format
 	std::string outString = "";
-	std::string delimiter = ",";
+	std::string delimiter = ", ";
 
 	// Example string
 	// #Action: Highlight Target:BP_Target_C_2147482264	Seconds: 43	Partial: 0.685673	TargetX: 71.11575	TargetY: 36.595354	TargetZ: -68.963895	MouseX: 976.0	MouseY: 322.0	Key Required: S
