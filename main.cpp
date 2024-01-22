@@ -6,7 +6,7 @@
 
 int main()
 {
-	std::string filename = "C:/Users/dommc/Desktop/FPS_UserData/Monday/2023.11.27-10.52.49_Aliyaan.txt";
+	std::string filename = "C:/Users/dommc/Desktop/FPS_UserData/Friday/2023.12.08-15.37.00_Bradley.txt";
 	std::string inString;
 
 	std::ifstream file(filename);
@@ -38,7 +38,7 @@ int main()
 	// #Action: Highlight Target:BP_Target_C_2147482264	Seconds: 43	Partial: 0.685673	TargetX: 71.11575	TargetY: 36.595354	TargetZ: -68.963895	MouseX: 976.0	MouseY: 322.0	Key Required: S
 	// #Action: Destroy Target:BP_Target_C_2147482264	Seconds:44	Partial: 0.310433	TargetX: 71.11575	TargetY: 36.595354	TargetZ: -68.963895	MouseX: 1009.0	MouseY: 307.0	Deviation Squared: 952745.5625	Key Required: S	Key Pressed: S
 
-	while (startRead < fileEnd)
+	while (lineEnd < fileEnd)
 	{
 		while (startRead < lineEnd)
 		{
